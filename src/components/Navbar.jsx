@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import logoDonJuan from '../imgs/logodonjuan-navbar.png';
 
 const navItems = [
   { label: 'Inicio', to: '/' },
@@ -55,9 +56,8 @@ function Navbar() {
     <header className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
       <a className="navbar__brand" href="/" onClick={(event) => navigateTo(event, '/')} aria-label="Don Juan inicio">
         <span className="navbar__logo">
-          {/* TODO: Reemplazar por logo generado con IA o archivo final de marca Don Juan. */}
+          <img src={logoDonJuan} alt="" />
         </span>
-        <span>Don Juan</span>
       </a>
 
       <nav className="navbar__links" aria-label="Navegacion principal">

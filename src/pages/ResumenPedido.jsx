@@ -3,6 +3,9 @@ import Button from '../components/Button.jsx';
 import Footer from '../components/Footer.jsx';
 import ImagePlaceholder from '../components/ImagePlaceholder.jsx';
 import Navbar from '../components/Navbar.jsx';
+import imgprod2 from '../imgs/imgprod2.png';
+import imgprod5 from '../imgs/imgprod5.png';
+import imgprod7 from '../imgs/imgprod7.png';
 
 const initialItems = [
   {
@@ -11,6 +14,7 @@ const initialItems = [
     presentation: '1 kg',
     pricePerKg: 184,
     quantity: 2,
+    imageSrc: imgprod2,
   },
   {
     id: 2,
@@ -18,6 +22,7 @@ const initialItems = [
     presentation: '3 kg',
     pricePerKg: 156,
     quantity: 1,
+    imageSrc: imgprod5,
   },
   {
     id: 3,
@@ -25,6 +30,7 @@ const initialItems = [
     presentation: '1 kg',
     pricePerKg: 118,
     quantity: 3,
+    imageSrc: imgprod7,
   },
 ];
 
@@ -85,7 +91,7 @@ function ResumenPedido() {
             {items.map((item) => (
               <article className="order-row" key={item.id}>
                 <div className="order-row__product" data-label="Producto">
-                  <ImagePlaceholder label={item.name} className="order-row__image" />
+                  <ImagePlaceholder label={item.name} src={item.imageSrc} className="order-row__image" />
                   <strong>{item.name}</strong>
                 </div>
 

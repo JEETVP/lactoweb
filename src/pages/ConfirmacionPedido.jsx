@@ -3,6 +3,9 @@ import Button from '../components/Button.jsx';
 import Footer from '../components/Footer.jsx';
 import ImagePlaceholder from '../components/ImagePlaceholder.jsx';
 import Navbar from '../components/Navbar.jsx';
+import imgprod2 from '../imgs/imgprod2.png';
+import imgprod5 from '../imgs/imgprod5.png';
+import imgprod7 from '../imgs/imgprod7.png';
 
 const orderItems = [
   {
@@ -10,18 +13,21 @@ const orderItems = [
     name: 'Queso Gouda',
     quantity: 2,
     total: 368,
+    imageSrc: imgprod2,
   },
   {
     id: 2,
     name: 'Quesillo',
     quantity: 1,
     total: 156,
+    imageSrc: imgprod5,
   },
   {
     id: 3,
     name: 'Queso Crema',
     quantity: 3,
     total: 354,
+    imageSrc: imgprod7,
   },
 ];
 
@@ -52,7 +58,7 @@ function ConfirmacionPedido() {
       <main className="checkout-page fade-in">
         <section className="checkout-header">
           <span className="eyebrow">Confirmación</span>
-          <h1>Finaliza tu pedido Don Juan</h1>
+          <h1>Finaliza tu pedido </h1>
         </section>
 
         <section className="checkout-layout">
@@ -109,7 +115,7 @@ function ConfirmacionPedido() {
             <div className="checkout-summary__items">
               {orderItems.map((item) => (
                 <article className="checkout-item" key={item.id}>
-                  <ImagePlaceholder label={item.name} className="checkout-item__image" />
+                  <ImagePlaceholder label={item.name} src={item.imageSrc} className="checkout-item__image" />
                   <div>
                     <h3>{item.name}</h3>
                     <span>Cantidad: {item.quantity}</span>
