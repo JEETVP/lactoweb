@@ -2,29 +2,57 @@ import React from 'react';
 import ImagePlaceholder from './ImagePlaceholder.jsx';
 import Button from './Button.jsx';
 
-function ProductCard({ name, description, tag, price, compact = false, showActions = false, imageSrc, href, onClick }) {
-  const className = `product-card ${compact ? 'product-card--compact' : ''}`;
+function ProductCard({
+  name,
+  description,
+  tag,
+  price,
+  presentation,
+  compact = false,
+  showActions = false,
+  imageSrc,
+  href,
+  onClick,
+  onAddToCart,
+}) {
+  const isClickableCard = showActions && onClick;
+  const className = `product-card ${compact ? 'product-card--compact' : ''} ${
+    isClickableCard ? 'product-card--clickable' : ''
+  }`.trim();
+  const handleViewProduct = (event) => {
+    event.stopPropagation();
+    onClick?.(event);
+  };
+  const handleAddToCart = (event) => {
+    event.stopPropagation();
+    onAddToCart?.(event);
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      handleViewProduct(event);
+    }
+  };
   const content = (
     <>
       <ImagePlaceholder label={compact ? name || 'Producto' : name} src={imageSrc} className="product-card__image" />
       <div className="product-card__content">
         {tag && <span className="product-card__tag">{tag}</span>}
         <h3>{name}</h3>
+        {presentation && <span className="product-card__presentation">Presentación: {presentation}</span>}
         {price && <strong className="product-card__price">{price}</strong>}
-        <p>{description}</p>
+        {description && <p>{description}</p>}
         {showActions && (
           <div className="product-card__actions">
-            <Button className="product-card__button" onClick={onClick}>
+            <Button className="product-card__button" onClick={handleViewProduct}>
               Ver producto
             </Button>
-            <button className="product-card__cart" aria-label={`Agregar ${name} al carrito`}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="9" cy="20" r="1.7" />
-                <circle cx="18" cy="20" r="1.7" />
-                <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7" />
-                <path d="M12 11h5" />
-                <path d="M14.5 8.5v5" />
-              </svg>
+            <button
+              className="product-card__cart"
+              type="button"
+              aria-label={`Agregar ${name} al carrito`}
+              onClick={handleAddToCart}
+            >
+              Agregar
             </button>
           </div>
         )}
@@ -41,7 +69,13 @@ function ProductCard({ name, description, tag, price, compact = false, showActio
   }
 
   return (
-    <article className={className}>
+    <article
+      className={className}
+      onClick={isClickableCard ? onClick : undefined}
+      onKeyDown={isClickableCard ? handleKeyDown : undefined}
+      role={isClickableCard ? 'button' : undefined}
+      tabIndex={isClickableCard ? 0 : undefined}
+    >
       {content}
     </article>
   );

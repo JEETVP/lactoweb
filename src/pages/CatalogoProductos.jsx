@@ -2,8 +2,10 @@ import React, { useMemo, useState } from 'react';
 import Footer from '../components/Footer.jsx';
 import Navbar from '../components/Navbar.jsx';
 import ProductCard from '../components/ProductCard.jsx';
+import { addCartItem } from '../utils/cart.js';
+import { showSuccessToast } from '../utils/toast.js';
+import newbanner from '../imgs/newbanner.png';
 import imgprod1 from '../imgs/imgprod1.png';
-import imgprod2 from '../imgs/imgprod2.png';
 import imgprod3 from '../imgs/imgprod3.png';
 import imgprod4 from '../imgs/imgprod4.png';
 import imgprod5 from '../imgs/imgprod5.png';
@@ -17,27 +19,34 @@ const products = [
     name: 'Queso Frescal',
     price: 126,
     category: 'Quesos',
+    presentation: '3 kg',
     imageSrc: imgprod1,
+    slug: 'queso-frescal',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed sapien justo.',
   },
   {
     name: 'Queso Gouda',
     price: 184,
     category: 'Quesos',
-    imageSrc: imgprod2,
+    presentation: '3 kg',
+    imageSrc: imgprod5,
+    slug: 'queso-gouda',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed sapien justo.',
   },
   {
     name: 'Queso Ranchero',
     price: 142,
     category: 'Quesos',
+    presentation: '3 kg',
     imageSrc: imgprod3,
+    slug: 'queso-ranchero',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed sapien justo.',
   },
   {
     name: 'Queso Tipo Sierra',
     price: 168,
     category: 'Quesos',
+    presentation: '3 kg',
     imageSrc: imgprod4,
     slug: 'queso-tipo-sierra',
     description:
@@ -47,6 +56,7 @@ const products = [
     name: 'Queso Tipo Gouda',
     price: 156,
     category: 'Quesos',
+    presentation: '3 kg',
     imageSrc: imgprod5,
     slug: 'queso-tipo-gouda',
     description:
@@ -56,21 +66,27 @@ const products = [
     name: 'Queso Cotija',
     price: 198,
     category: 'Quesos',
+    presentation: '3 kg',
     imageSrc: imgprod5,
+    slug: 'queso-cotija',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed sapien justo.',
   },
   {
     name: 'Queso Crema',
     price: 118,
     category: 'Cremas',
+    presentation: '3 kg',
     imageSrc: imgprod7,
+    slug: 'queso-crema',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed sapien justo.',
   },
   {
     name: 'Queso Cheddar',
     price: 176,
     category: 'Quesos',
+    presentation: '3 kg',
     imageSrc: imgprod7,
+    slug: 'queso-cheddar',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed sapien justo.',
   },
 ];
@@ -95,27 +111,18 @@ function CatalogoProductos() {
       .sort((a, b) => (sortOrder === 'asc' ? a.price - b.price : b.price - a.price));
   }, [category, search, sortOrder]);
 
+  const handleAddToCart = (product) => {
+    addCartItem(product);
+    showSuccessToast('Tu producto fue agregado a la bolsa');
+  };
+
   return (
     <div className="site-shell catalog-shell">
       <Navbar />
 
       <main className="catalog-page fade-in">
-        <section className="catalog-hero">
-          <div>
-            <span className="eyebrow">Productos lacteos de calidad</span>
-            <h1>Catálogo Don Juan</h1>
-            <p>Tradición y calidad en cada producto.</p>
-          </div>
-
-          <label className="catalog-search">
-            <span>Buscar</span>
-            <input
-              type="search"
-              placeholder="Buscar producto"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </label>
+        <section className="catalog-banner" aria-label="Catálogo Don Juan">
+          <img src={newbanner} alt="Catálogo de productos Don Juan" />
         </section>
 
         <section className={`catalog-layout ${filtersOpen ? '' : 'catalog-layout--filters-hidden'}`}>
@@ -129,11 +136,13 @@ function CatalogoProductos() {
           )}
 
           <aside className="catalog-filters" aria-label="Filtros del catalogo">
+            <div className="catalog-sidebar-title">
+              <h1>Quesos Don Juan</h1>
+              <span>{products.length} productos</span>
+            </div>
+
             <div className="catalog-filters__header">
               <h2>Filtros</h2>
-              <button type="button" onClick={() => setFiltersOpen(false)} aria-label="Ocultar filtros">
-                Ocultar
-              </button>
             </div>
 
             <div className="filter-group">
@@ -183,6 +192,17 @@ function CatalogoProductos() {
               >
                 {filtersOpen ? 'Cerrar filtros' : 'Abrir filtros'}
               </button>
+
+              <label className="catalog-search">
+                <span>Buscar</span>
+                <input
+                  type="search"
+                  placeholder="Buscar producto"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
+              </label>
+
               <span>{filteredProducts.length} productos</span>
             </div>
 
@@ -192,13 +212,12 @@ function CatalogoProductos() {
                   key={product.name}
                   name={product.name}
                   price={`$${product.price}`}
-                  description={product.description}
+                  presentation={product.presentation}
                   tag={product.category}
                   imageSrc={product.imageSrc}
-                  href={product.slug ? `/producto/${product.slug}` : undefined}
-                  onClick={
-                    product.slug ? (event) => navigateTo(event, `/producto/${product.slug}`) : undefined
-                  }
+                  href={`/producto/${product.slug}`}
+                  onClick={(event) => navigateTo(event, `/producto/${product.slug}`)}
+                  onAddToCart={() => handleAddToCart(product)}
                   showActions
                 />
               ))}

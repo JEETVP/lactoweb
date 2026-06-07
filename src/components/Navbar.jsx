@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getCartItems } from '../utils/cart.js';
 import logoDonJuan from '../imgs/logodonjuan-navbar.png';
 
 const navItems = [
@@ -6,7 +7,7 @@ const navItems = [
   { label: 'Productos', to: '/productos' },
   { label: 'Recetas', to: '/#recetas' },
   { label: 'Nosotros', to: '/#nosotros' },
-  { label: 'Contacto', to: '/#contacto' },
+  { label: 'Contacto', to: '/contacto' },
 ];
 
 const icons = {
@@ -44,12 +45,29 @@ function navigateTo(event, to) {
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const totalItems = getCartItems().reduce((total, item) => total + (Number(item.quantity) || 0), 0);
+      setCartCount(totalItems);
+    };
+
+    updateCartCount();
+    window.addEventListener('donjuan:cart-updated', updateCartCount);
+    window.addEventListener('storage', updateCartCount);
+
+    return () => {
+      window.removeEventListener('donjuan:cart-updated', updateCartCount);
+      window.removeEventListener('storage', updateCartCount);
+    };
   }, []);
 
   return (
@@ -79,6 +97,7 @@ function Navbar() {
           aria-label="Carrito"
         >
           {icons.cart}
+          {cartCount > 0 && <span className="navbar__cart-count">{cartCount}</span>}
         </a>
         {/* TODO: Integrar envio de pedido por WhatsApp. */}
         <button aria-label="WhatsApp">{icons.whatsapp}</button>

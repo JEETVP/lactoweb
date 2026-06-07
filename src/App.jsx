@@ -1,12 +1,14 @@
 import React, { Component, useEffect, useState } from 'react';
 import CatalogoProductos from './pages/CatalogoProductos.jsx';
 import ConfirmacionPedido from './pages/ConfirmacionPedido.jsx';
+import Contacto from './pages/Contacto.jsx';
 import DetalleProducto from './pages/DetalleProducto.jsx';
 import DetalleReceta from './pages/DetalleReceta.jsx';
 import LandingPage from './pages/LandingPage.jsx';
 import Login from './pages/Login.jsx';
 import Registro from './pages/Registro.jsx';
 import ResumenPedido from './pages/ResumenPedido.jsx';
+import ToastContainer from './components/ToastContainer.jsx';
 
 const routes = [
   { pattern: /^\/$/, Component: LandingPage },
@@ -15,6 +17,7 @@ const routes = [
   { pattern: /^\/recetas\/molletes-don-juan\/?$/, Component: DetalleReceta },
   { pattern: /^\/carrito\/?$/, Component: ResumenPedido },
   { pattern: /^\/confirmacion-pedido\/?$/, Component: ConfirmacionPedido },
+  { pattern: /^\/contacto\/?$/, Component: Contacto },
   { pattern: /^\/login\/?$/, Component: Login },
   { pattern: /^\/registro\/?$/, Component: Registro },
 ];
@@ -68,6 +71,7 @@ function App() {
   return (
     <AppErrorBoundary>
       <Page />
+      <ToastContainer />
     </AppErrorBoundary>
   );
 }

@@ -3,36 +3,7 @@ import Button from '../components/Button.jsx';
 import Footer from '../components/Footer.jsx';
 import ImagePlaceholder from '../components/ImagePlaceholder.jsx';
 import Navbar from '../components/Navbar.jsx';
-import imgprod2 from '../imgs/imgprod2.png';
-import imgprod5 from '../imgs/imgprod5.png';
-import imgprod7 from '../imgs/imgprod7.png';
-
-const initialItems = [
-  {
-    id: 1,
-    name: 'Queso Gouda',
-    presentation: '1 kg',
-    pricePerKg: 184,
-    quantity: 2,
-    imageSrc: imgprod2,
-  },
-  {
-    id: 2,
-    name: 'Quesillo',
-    presentation: '3 kg',
-    pricePerKg: 156,
-    quantity: 1,
-    imageSrc: imgprod5,
-  },
-  {
-    id: 3,
-    name: 'Queso Crema',
-    presentation: '1 kg',
-    pricePerKg: 118,
-    quantity: 3,
-    imageSrc: imgprod7,
-  },
-];
+import { getCartItems, saveCartItems } from '../utils/cart.js';
 
 // TODO: Sincronizar carrito y pedido con Firestore cuando exista backend.
 const currency = new Intl.NumberFormat('es-MX', {
@@ -41,26 +12,40 @@ const currency = new Intl.NumberFormat('es-MX', {
   style: 'currency',
 });
 
+function navigateTo(event, to) {
+  event.preventDefault();
+  window.history.pushState({}, '', to);
+  window.dispatchEvent(new Event('app:navigation'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function ResumenPedido() {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState(() => getCartItems());
 
   const updateQuantity = (id, value) => {
     const nextValue = Number(value);
 
-    setItems((currentItems) =>
-      currentItems.map((item) =>
+    setItems((currentItems) => {
+      const nextItems = currentItems.map((item) =>
         item.id === id
           ? {
               ...item,
               quantity: Number.isNaN(nextValue) ? 1 : Math.max(1, nextValue),
             }
           : item,
-      ),
-    );
+      );
+
+      saveCartItems(nextItems);
+      return nextItems;
+    });
   };
 
   const removeItem = (id) => {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+    setItems((currentItems) => {
+      const nextItems = currentItems.filter((item) => item.id !== id);
+      saveCartItems(nextItems);
+      return nextItems;
+    });
   };
 
   const orderTotal = useMemo(() => {
@@ -74,7 +59,7 @@ function ResumenPedido() {
       <main className="order-summary-page fade-in">
         <section className="order-summary__header">
           <span className="eyebrow">Resumen de pedido</span>
-          <h1>Artículos por ordenar</h1>
+          <h1>Mi carrito</h1>
         </section>
 
         <section className="order-panel" aria-label="Articulos seleccionados">
@@ -129,12 +114,16 @@ function ResumenPedido() {
           </div>
 
           <div className="order-panel__footer">
-            <Button variant="light">Seguir comprando</Button>
+            <Button variant="light" onClick={(event) => navigateTo(event, '/productos')}>
+              Seguir comprando
+            </Button>
             <div className="order-total">
               <span>Total acumulado</span>
               <strong>{currency.format(orderTotal)}</strong>
             </div>
-            <Button>Continuar pedido</Button>
+            <Button onClick={(event) => navigateTo(event, '/confirmacion-pedido')}>
+              Continuar pedido
+            </Button>
           </div>
         </section>
       </main>
